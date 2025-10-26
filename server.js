@@ -11,6 +11,8 @@ const io = socketIo(server, {
 
 let users = {};
 
+let reports = [];
+
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
@@ -19,6 +21,10 @@ io.on("connection", (socket) => {
     io.emit("updateLocations", users); // broadcast to all clients
   });
 
+  socket.on("sendReport", (report) => {
+    reports.push(report);
+    io.emit("updateReports", reports);
+  });
   socket.on("disconnect", () => {
     delete users[socket.id];
     io.emit("updateLocations", users);
